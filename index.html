@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SecureX일일 업무보고서 자동 생성기</title>
+  <meta name="description" content="SecureX 기술지원팀 일일 업무보고서 자동 생성기 실습 화면" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="page-shell">
+    <header class="hero">
+      <div class="hero__eyebrow">SecureX Daily Report Lab</div>
+      <h1>SecureX일일 업무보고서 자동 생성기</h1>
+      <p>
+        메신저 대화와 JIRA 업무 데이터를 붙여 넣으면, 일일 업무보고서 초안을 바로 만들 수 있는 실습 화면입니다.
+      </p>
+      <div class="hero__actions">
+        <button id="loadSampleBtn" class="btn btn--secondary" type="button">샘플 데이터 불러오기</button>
+        <button id="generateLocalBtn" class="btn btn--primary" type="button">로컬 샘플 보고서 생성</button>
+        <button id="generateAiBtn" class="btn btn--secondary" type="button">AI 보고서 생성</button>
+      </div>
+    </header>
+
+    <main class="workspace">
+      <section class="panel panel--inputs" aria-label="입력 영역">
+        <div class="field field--api">
+          <div class="field__header">
+            <label for="apiKeyInput">OpenAI API Key 입력 영역</label>
+            <span id="apiKeyStatus" class="field__hint">API Key 미설정</span>
+          </div>
+          <input
+            id="apiKeyInput"
+            type="password"
+            class="input"
+            placeholder="OpenAI API Key를 입력하세요"
+            autocomplete="off"
+            spellcheck="false"
+          />
+          <div class="field__actions">
+            <button id="saveApiKeyBtn" class="btn btn--secondary" type="button">API Key 저장</button>
+            <button id="validateApiKeyBtn" class="btn btn--ghost" type="button">API Key 검증</button>
+            <button id="deleteApiKeyBtn" class="btn btn--ghost" type="button">API Key 삭제</button>
+          </div>
+          <div class="field__summary" aria-live="polite">
+            <span class="field__summary-label">저장된 API Key 정보</span>
+            <span id="apiKeySummary" class="field__summary-value">없음</span>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="reportDate">작성일 입력 영역</label>
+          <input id="reportDate" type="date" class="input" />
+        </div>
+
+        <div class="field">
+          <div class="field__header">
+            <label for="chatInput">메신저 대화 내용 입력 영역</label>
+            <span class="field__hint">샘플 파일 또는 직접 입력</span>
+          </div>
+          <textarea
+            id="chatInput"
+            class="input input--textarea"
+            placeholder="메신저 대화 내용을 붙여 넣어 주세요."
+          ></textarea>
+        </div>
+
+        <div class="field">
+          <div class="field__header">
+            <label for="jiraInput">JIRA 업무 데이터 입력 영역</label>
+            <span class="field__hint">CSV 형식</span>
+          </div>
+          <textarea
+            id="jiraInput"
+            class="input input--textarea"
+            placeholder="JIRA CSV 데이터를 붙여 넣어 주세요."
+          ></textarea>
+        </div>
+      </section>
+
+      <section class="panel panel--output" aria-label="보고서 영역">
+        <div class="panel__header">
+          <div>
+            <h2>보고서 출력 영역</h2>
+            <p>생성된 초안은 아래에 표시되고 복사할 수 있습니다.</p>
+          </div>
+          <div class="panel__actions">
+            <button id="copyBtn" class="btn btn--ghost" type="button">보고서 복사</button>
+            <button id="downloadTxtBtn" class="btn btn--ghost" type="button">TXT로 다운로드</button>
+            <button id="resetBtn" class="btn btn--ghost" type="button">초기화 버튼</button>
+          </div>
+        </div>
+
+        <div class="report-card">
+          <div class="report-card__meta">
+            <span id="reportModeLabel">보고서 생성 방식: 로컬 샘플 생성</span>
+            <span id="reportAccessLabel">API Key 없이 실행 가능</span>
+          </div>
+          <h2 id="reportTitle" class="report-title">SecureX 일일 업무보고서</h2>
+          <div class="report-section">
+            <h3 class="report-section__title">업무 현황 요약표</h3>
+            <div class="table-wrap">
+              <table class="report-table" aria-label="업무 현황 요약표">
+                <thead>
+                  <tr>
+                    <th>구분</th>
+                    <th>주요 내용</th>
+                    <th>담당자</th>
+                    <th>상태</th>
+                    <th>우선순위</th>
+                    <th>다음 조치</th>
+                  </tr>
+                </thead>
+                <tbody id="summaryTableBody">
+                  <tr>
+                    <td colspan="6" class="table-empty">샘플 데이터를 불러온 뒤 보고서 생성을 눌러 주세요.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="report-section">
+            <h3 class="report-section__title">일일 업무보고서 본문</h3>
+            <pre id="reportOutput" class="report-output" aria-live="polite">샘플 데이터를 불러온 뒤 보고서 생성을 눌러 주세요.</pre>
+          </div>
+        </div>
+
+        <div class="report-footer">
+          <div id="reportTimestamp" class="report-timestamp">보고서 생성 시각: -</div>
+          <div id="statusMessage" class="status" role="status" aria-live="polite"></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
